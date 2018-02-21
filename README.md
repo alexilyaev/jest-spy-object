@@ -1,5 +1,11 @@
 # jest-spy-object
 
+[![Build Status](https://circleci.com/gh/alexilyaev/jest-spy-object.svg?style=shield&circle-token=4a6fdf703165cc00738798503a94babdb60b786a)](https://circleci.com/gh/alexilyaev/jest-spy-object)
+[![version](https://img.shields.io/npm/v/jest-spy-object.svg?style=flat-square)](http://npm.im/jest-spy-object)
+[![MIT License](https://img.shields.io/npm/l/jest-spy-object.svg?style=flat-square)](http://opensource.org/licenses/MIT)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+[![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
+
 Spies on all Object or Class methods using `jest.spyOn`.
 
 ## Why?
