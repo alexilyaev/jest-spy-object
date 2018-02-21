@@ -1,5 +1,7 @@
 'use strict';
 
+const { EventEmitter } = require('events');
+
 const spyObject = require('./index');
 
 describe('Counter', () => {
@@ -53,6 +55,109 @@ describe('Counter', () => {
 
       expect(counter.increment).toHaveBeenCalled();
       expect(counter.incrementBy).toHaveBeenCalledWith(1);
+      expect(counter.value).toBe(1);
+    });
+
+    it('should accept an ES6 Class with `extends` of another Class', () => {
+      class Super {
+        getValue() {
+          return this.value;
+        }
+      }
+
+      class Counter extends Super {
+        constructor() {
+          super();
+
+          this.value = 0;
+        }
+
+        incrementBy(val) {
+          this.value = this.getValue() + val;
+        }
+
+        increment() {
+          this.incrementBy(1);
+        }
+      }
+
+      spyObject(Counter);
+
+      const counter = new Counter();
+
+      counter.increment();
+
+      expect(counter.increment).toHaveBeenCalled();
+      expect(counter.incrementBy).toHaveBeenCalledWith(1);
+      expect(counter.getValue).toHaveBeenCalled();
+      expect(counter.getValue()).toBe(1);
+      expect(counter.value).toBe(1);
+    });
+
+    it('should accept an ES6 Class with `extends` of a constructor with prototype', () => {
+      function Super() {}
+
+      Super.prototype.getValue = function getValue() {
+        return this.value;
+      };
+
+      class Counter extends Super {
+        constructor() {
+          super();
+
+          this.value = 0;
+        }
+
+        incrementBy(val) {
+          this.value = this.getValue() + val;
+        }
+
+        increment() {
+          this.incrementBy(1);
+        }
+      }
+
+      spyObject(Counter);
+
+      const counter = new Counter();
+
+      counter.increment();
+
+      expect(counter.increment).toHaveBeenCalled();
+      expect(counter.incrementBy).toHaveBeenCalledWith(1);
+      expect(counter.getValue).toHaveBeenCalled();
+      expect(counter.getValue()).toBe(1);
+      expect(counter.value).toBe(1);
+    });
+
+    it('should accept an ES6 Class with `extends` of an external class/constructor', () => {
+      class Counter extends EventEmitter {
+        constructor() {
+          super();
+
+          this.value = 0;
+
+          this.setMaxListeners(0);
+        }
+
+        incrementBy(val) {
+          this.value = this.value + val;
+        }
+
+        increment() {
+          this.incrementBy(1);
+        }
+      }
+
+      spyObject(Counter);
+
+      const counter = new Counter();
+
+      counter.increment();
+
+      expect(counter.increment).toHaveBeenCalled();
+      expect(counter.incrementBy).toHaveBeenCalledWith(1);
+      expect(counter.setMaxListeners).toHaveBeenCalledWith(0);
       expect(counter.value).toBe(1);
     });
 

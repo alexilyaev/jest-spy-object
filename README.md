@@ -26,6 +26,12 @@ Or with `npm`
 npm i -D jest-spy-object
 ```
 
+## Require
+
+```js
+const spyObject = require('jest-spy-object');
+```
+
 ## Usage
 
 ### Given a Class
@@ -95,7 +101,7 @@ describe('Counter', () => {
 
 ## Other supported inputs
 
-A Function constructor...
+### Function constructor
 
 ```js
 function Counter() {
@@ -115,7 +121,7 @@ spyObject(Counter);
 spyObject(Counter.prototype);
 ```
 
-A plain Object...
+### Plain Object
 
 ```js
 const counter = {
