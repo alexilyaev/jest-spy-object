@@ -136,15 +136,17 @@ describe('Counter', () => {
           super();
 
           this.value = 0;
-
-          this.setMaxListeners(0);
         }
 
         incrementBy(val) {
           this.value = this.value + val;
+
+          this.removeListener('foo', this.increment);
         }
 
         increment() {
+          this.setMaxListeners(0);
+
           this.incrementBy(1);
         }
       }
@@ -153,11 +155,15 @@ describe('Counter', () => {
 
       const counter = new Counter();
 
+      counter.setMaxListeners.mockImplementation(() => {});
+      counter.removeListener.mockImplementation(() => {});
+
       counter.increment();
 
       expect(counter.increment).toHaveBeenCalled();
       expect(counter.incrementBy).toHaveBeenCalledWith(1);
       expect(counter.setMaxListeners).toHaveBeenCalledWith(0);
+      expect(counter.removeListener).toHaveBeenCalledTimes(1);
       expect(counter.value).toBe(1);
     });
 
