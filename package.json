@@ -1,6 +1,6 @@
 {
   "name": "jest-spy-object",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Spies on all Object or Class methods using `jest.spyOn`",
   "main": "src/index.js",
   "scripts": {
