@@ -5,13 +5,21 @@ function _isClass(obj) {
     return false;
   }
 
-  return /^(class|function)/.test(obj.toString());
+  const objStr = obj.toString();
+  const isClassStr = /^class/.test(objStr);
+  const isFuncStr = /^function/.test(objStr);
+
+  if (isClassStr) {
+    return true;
+  }
+
+  return isFuncStr && Object.keys(obj.prototype).length;
 }
 
 function _isExtends(obj) {
   const prototypeProto = Object.getPrototypeOf(obj);
 
-  return prototypeProto && prototypeProto.constructor.name !== 'Object';
+  return prototypeProto && !/(Object|Function)/.test(prototypeProto.constructor.name);
 }
 
 function _isFunction(property) {
@@ -46,8 +54,23 @@ function _spyOnObjectMethods(target, props) {
   });
 }
 
-function spyObject(object) {
-  const target = _isClass(object) ? object.prototype : object;
+/**
+ * Execute `jest.spyOn` on all methods of the provided object
+ * Supports `extends` (prototype inheritance), will `spyOn` inherited methods as well
+ *
+ * @param {Object|Function|Class} object Any object that has methods on it
+ * @param {Object}                [options]
+ * @param {boolean}               options.ignorePrototype Force using the Static methods only
+ */
+function spyObject(object, options = {}) {
+  let target;
+
+  if (options.ignorePrototype) {
+    target = object;
+  } else {
+    target = _isClass(object) ? object.prototype : object;
+  }
+
   let targetExtends = target;
 
   // Using `getOwnPropertyNames` since class methods are not enumerable

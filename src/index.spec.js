@@ -130,6 +130,38 @@ describe('Counter', () => {
       expect(counter.value).toBe(1);
     });
 
+    it('should accept an ES6 Class with `extends` of a empty constructor', () => {
+      function Super() {
+        this.num = 10;
+      }
+
+      class Counter extends Super {
+        constructor() {
+          super();
+
+          this.value = 0;
+        }
+
+        incrementBy(val) {
+          this.value = this.num + val;
+        }
+
+        increment() {
+          this.incrementBy(1);
+        }
+      }
+
+      spyObject(Counter);
+
+      const counter = new Counter();
+
+      counter.increment();
+
+      expect(counter.increment).toHaveBeenCalled();
+      expect(counter.incrementBy).toHaveBeenCalledWith(1);
+      expect(counter.value).toBe(11);
+    });
+
     it('should accept an ES6 Class with `extends` of an external class/constructor', () => {
       class Counter extends EventEmitter {
         constructor() {
@@ -338,6 +370,46 @@ describe('Counter', () => {
       expect(counter.add).toHaveBeenCalledWith(0);
       expect(counter.add).toHaveBeenCalledWith(1);
       expect(counter.size).toBe(2);
+    });
+
+    it('should accept a function with static methods on it', () => {
+      function request(uri) {
+        return request.get(uri);
+      }
+
+      request.get = function(uti) {
+        return uti;
+      };
+
+      spyObject(request);
+
+      const uri = 'http://google.com';
+
+      request(uri);
+
+      expect(request.get).toHaveBeenCalledWith(uri);
+    });
+  });
+
+  describe('Options', () => {
+    describe('ignorePrototype', () => {
+      it('should support a flag to force using Static methods only', () => {
+        function Rollbar() {}
+
+        Rollbar.prototype.error = function() {
+          return 'fail';
+        };
+
+        Rollbar.error = function(msg) {
+          return msg;
+        };
+
+        spyObject(Rollbar, { ignorePrototype: true });
+
+        Rollbar.error('foo');
+
+        expect(Rollbar.error).toHaveBeenCalledWith('foo');
+      });
     });
   });
 
