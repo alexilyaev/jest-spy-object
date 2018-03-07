@@ -234,6 +234,111 @@ describe('Counter', () => {
       expect(counter.incrementBy).toHaveBeenCalledWith(1);
       expect(counter.value).toBe(1);
     });
+
+    it('should accept an ES6 Map', () => {
+      const testMap = new Map();
+
+      spyObject(testMap);
+
+      testMap.set('foo', 999);
+
+      expect(testMap.set).toHaveBeenCalledWith('foo', 999);
+    });
+
+    it('should accept an ES6 Set', () => {
+      const testMap = new Set();
+
+      spyObject(testMap);
+
+      testMap.add(999);
+
+      expect(testMap.add).toHaveBeenCalledWith(999);
+    });
+
+    it('should accept an ES6 Class with `extends` of an ES6 Map', () => {
+      class Counter extends Map {
+        constructor() {
+          super();
+
+          this.set('value', 0);
+        }
+
+        incrementBy(val) {
+          this.set('value', this.get('value') + val);
+        }
+
+        increment() {
+          this.incrementBy(1);
+        }
+      }
+
+      spyObject(Counter);
+
+      const counter = new Counter();
+
+      counter.increment();
+
+      expect(counter.increment).toHaveBeenCalled();
+      expect(counter.incrementBy).toHaveBeenCalledWith(1);
+      expect(counter.set).toHaveBeenCalledWith('value', 0);
+      expect(counter.set).toHaveBeenCalledWith('value', 1);
+      expect(counter.get).toHaveBeenCalledWith('value');
+      expect(counter.size).toBe(1);
+    });
+
+    it('should accept an instance of an ES6 Class with `extends` of an ES6 Map', () => {
+      class Counter extends Map {
+        constructor() {
+          super();
+
+          this.set('value', 0);
+        }
+
+        incrementBy(val) {
+          this.set('value', this.get('value') + val);
+        }
+
+        increment() {
+          this.incrementBy(1);
+        }
+      }
+
+      const counter = new Counter();
+
+      spyObject(counter);
+
+      counter.increment();
+
+      expect(counter.increment).toHaveBeenCalled();
+      expect(counter.incrementBy).toHaveBeenCalledWith(1);
+      expect(counter.set).toHaveBeenCalledWith('value', 1);
+      expect(counter.get).toHaveBeenCalledWith('value');
+    });
+
+    it('should accept an ES6 Class with `extends` of an ES6 Set', () => {
+      class Counter extends Set {
+        constructor() {
+          super();
+
+          this.add(0);
+        }
+
+        push() {
+          this.add(this.size);
+        }
+      }
+
+      spyObject(Counter);
+
+      const counter = new Counter();
+
+      counter.push();
+
+      expect(counter.push).toHaveBeenCalled();
+      expect(counter.add).toHaveBeenCalledWith(0);
+      expect(counter.add).toHaveBeenCalledWith(1);
+      expect(counter.size).toBe(2);
+    });
   });
 
   describe('Mock implementations', () => {
