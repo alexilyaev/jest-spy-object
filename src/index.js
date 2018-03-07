@@ -20,6 +20,10 @@ function _isFunction(property) {
 
 function _spyOnObjectMethods(target, props) {
   props.forEach(prop => {
+    // Ignore ES6 Map.prototype.size getter
+    if (prop === 'size' && (target instanceof Map || target instanceof Set)) {
+      return;
+    }
     // Ignore non function properties and the `constructor` function
     if (!_isFunction(target[prop]) || prop === 'constructor') {
       return;
