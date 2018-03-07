@@ -19,9 +19,8 @@ function _isFunction(property) {
 }
 
 function _spyOnObjectMethods(target, props) {
-  // Using `getOwnPropertyNames` since class methods are not enumerable
   props.forEach(prop => {
-    // Ignore non function properties and then `constructor` function
+    // Ignore non function properties and the `constructor` function
     if (!_isFunction(target[prop]) || prop === 'constructor') {
       return;
     }
@@ -47,6 +46,7 @@ function spyObject(object) {
   const target = _isClass(object) ? object.prototype : object;
   let targetExtends = target;
 
+  // Using `getOwnPropertyNames` since class methods are not enumerable
   _spyOnObjectMethods(target, Object.getOwnPropertyNames(target));
 
   // Handle `class Dog extends Animal` (support continuous extends)
