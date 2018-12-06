@@ -82,6 +82,7 @@
     "no-var": 1,
     "no-warning-comments": [1, { "terms": ["fixme", "todo", "hack", "review", "xxx"] }],
     "no-return-await": 1,
+    "no-throw-literal": 1,
     "require-await": 1,
     "padding-line-between-statements": [
       1,
@@ -105,6 +106,7 @@
         "jest": true
       }
     },
+
     // Test files
     {
       "files": ["**/*.spec.js"],
